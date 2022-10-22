@@ -1,0 +1,15 @@
+from telethon import events
+from app import bot
+
+@bot.on(events.ChatAction())
+async def on_join(event: events.ChatAction.Event):
+    if event.is_group and event.user_added and event.user_id == bot.me.id:
+        await bot.send_message(event.chat.id, "Приветствую, господа, бот был добавлен в группу!")
+
+@bot.on(events.ChatAction(func=lambda e: (e.user_added or e.user_joined) and e.user_id != bot.me.id))
+async def greet(event: events.ChatAction.Event):
+    await event.respond("Приветствие нового участника!")
+
+@bot.on(events.NewMessage(pattern="/start"))
+async def start(event):
+    await event.respond("Приветственное сообщение от бота")
